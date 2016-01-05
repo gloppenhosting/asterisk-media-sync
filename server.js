@@ -33,7 +33,7 @@ domain.run(function () {
     }
   });
 
-  var media_path = '/users/andreaskruger/test/'
+  var media_path = asterisk_config.get('media_path') || '/users/andreaskruger/test/';
 
   // Create update function for update timer
   var update = function() {

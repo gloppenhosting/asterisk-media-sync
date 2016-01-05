@@ -9,6 +9,7 @@
   },
   "asterisk": {
     "iaxtable" : "iaxfriends",
-    "mediafilestable": "mediafiles"
+    "mediafilestable": "mediafiles",
+    "media_path": "/var/lib/asterisk/sounds/custom/"
   }
 }

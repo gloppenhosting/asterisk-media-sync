@@ -56,7 +56,7 @@ domain.run(function () {
           }
           else {
 
-            fs.writeFileSync(media_path + filename, row.data, function(err) {
+            fs.writeFile(media_path + filename, row.data, function(err) {
               if (err) throw err;
 
               files.splice(file_exists, 1);

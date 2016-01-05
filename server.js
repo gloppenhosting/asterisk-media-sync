@@ -14,7 +14,7 @@ var mkdirp = require('mkdirp');
 // On any errors. Write them to console and exit program with error code
 domain.on('error', function (err) {
     if (debug)
-      console.log(moment(new Date()).format("YYYY-MM-DD HH:mm:ss"), err);
+      console.log(moment(new Date()).format("YYYY-MM-DD HH:mm:ss"), err, err.stack);
 
     process.exit(1);
 });

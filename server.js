@@ -13,8 +13,9 @@ var mkdirp = require('mkdirp');
 
 // On any errors. Write them to console and exit program with error code
 domain.on('error', function (err) {
-    if (debug)
+    if (debug) {
       console.log(moment(new Date()).format("YYYY-MM-DD HH:mm:ss"), err, err.stack);
+    }
 
     process.exit(1);
 });
@@ -33,7 +34,7 @@ domain.run(function () {
     }
   });
 
-  var media_path = asterisk_config.get('media_path') || '/users/andreaskruger/test/';
+  var media_path = asterisk_config.get('media_path');
 
   // Create update function for update timer
   var update = function() {
@@ -74,6 +75,7 @@ domain.run(function () {
     });
   };
 
+  // Create directory before we start!
   mkdirp(media_path, function(err) {
     // Lets update on first run!
     update();

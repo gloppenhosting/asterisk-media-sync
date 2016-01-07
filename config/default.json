@@ -1,5 +1,5 @@
 {
-  "debug": true,
+  "debug": false,
   "update_interval_sec": 60,
   "mysql": {
     "host"     : "",

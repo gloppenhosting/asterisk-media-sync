@@ -45,8 +45,7 @@ domain.run(function () {
       knex
       .select('md5', 'data', 'format')
       .from(asterisk_config.get('mediafilestable'))
-      .asCallback(function(err, rows) {
-        if (err) throw err;
+      .then(function(rows) {
 
         rows.forEach(function (row) {
           var filename = row.md5 + '.' + row.format;
@@ -56,7 +55,6 @@ domain.run(function () {
             files.splice(file_exists, 1);
           }
           else {
-
             fs.writeFile(media_path + filename, row.data, function(err) {
               if (err) throw err;
 
@@ -70,8 +68,10 @@ domain.run(function () {
           fs.unlinkSync(media_path + file);
         });
 
+      })
+      .catch(function(err) {
+        throw err;
       });
-
     });
   };
 

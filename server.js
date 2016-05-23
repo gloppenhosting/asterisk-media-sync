@@ -25,7 +25,7 @@ domain.on('error', function(err) {
 domain.run(function() {
 
     var knex = require('knex')({
-        client: 'mysql2',
+        client: 'mysql',
         connection: {
             host: (process.env.MYSQL_HOST || mysql_config.get('host') || '127.0.0.1'),
             user: (process.env.MYSQL_USER || mysql_config.get('user') || 'root'),

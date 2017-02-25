@@ -79,7 +79,7 @@ domain.run(function() {
                     .select('md5', 'data', 'format')
                     .from(asterisk_config.get('mediafilestable'))
                     .whereNotIn('md5', array)
-                    .limit(1)
+                    .limit(25)
                     .orderBy('id')
                     .distinct()
                     .then(function(rows) {

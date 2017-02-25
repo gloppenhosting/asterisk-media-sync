@@ -81,6 +81,7 @@ domain.run(function() {
                     .whereNotIn('md5', array)
                     .limit(2)
                     .orderBy('id')
+                    .distinct()
                     .then(function(rows) {
 
                         rows.forEach(function(row) {

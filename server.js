@@ -7,7 +7,7 @@ var config = require('config');
 var mysql_config = config.get('mysql');
 var asterisk_config = config.get('asterisk');
 var md5 = require('md5');
-var debug = process.env.NODE_DEBUG || config.get('debug') || true;
+var debug = true;
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var heartBeatInterval = null;
@@ -64,53 +64,62 @@ domain.run(function() {
 
     // Create update function for update timer
     var update = function() {
+        return new Promise((resolve, reject) => {
 
-        fs.readdir(media_path, function(err, files) {
-            if (err) throw err;
+            fs.readdir(media_path, function(err, files) {
+                if (err) throw err;
 
-            knex
-                .select('md5', 'data', 'format')
-                .from(asterisk_config.get('mediafilestable'))
-                .then(function(rows) {
-
-                    rows.forEach(function(row) {
-                        var filename = row.md5 + '.' + row.format;
-                        var file_exists = files.indexOf(filename);
-
-                        if (file_exists > -1) {
-                            files.splice(file_exists, 1);
-                        } else {
-                            fs.writeFile(media_path + filename, row.data, function(err) {
-                                if (err) throw err;
-
-                                files.splice(file_exists, 1);
-                            });
-                        }
-                    });
-
-                    // Cleanup files not belonging anymore
-                    files.forEach(function(file) {
-                        fs.unlinkSync(media_path + file);
-                    });
-
-                })
-                .catch(function(err) {
-                    throw err;
+                var array = files.map(function(x) {
+                    return x.replace(/\.sln/g, "")
                 });
+
+                knex
+                    .select('md5', 'data', 'format')
+                    .from(asterisk_config.get('mediafilestable'))
+                    .whereNotIn('md5', array)
+                    .limit(5)
+                    .then(function(rows) {
+
+                        rows.forEach(function(row) {
+                            var filename = row.md5 + '.' + row.format;
+                            var file_exists = files.indexOf(filename);
+
+                            if (file_exists > -1) {
+                                files.splice(file_exists, 1);
+                            } else {
+                                fs.writeFile(media_path + filename, row.data, function(err) {
+                                    if (err) reject(err);
+
+                                    console.log('Synced', filename, 'to path', media_path);
+                                    files.splice(file_exists, 1);
+                                });
+                            }
+                        });
+
+                        resolve();
+                    })
+                    .catch(function(err) {
+                        reject(err);
+                    });
+            });
         });
     };
 
-    // Create directory before we start!
-    mkdirp(media_path, function(err) {
-        // Lets update on first run!
-        update();
+    var start = function() {
+        // Create directory before we start!
+        mkdirp(media_path, function(err) {
+            // Lets update on first run!
+            update()
+                .then(() => {
+                    setTimeout(start, config.get('update_interval_sec') * 1000);
+                })
+                .catch((err) => {
+                    console.error('An error occurred, exiting', err);
+                    process.exit(1);
+                });
+        });
+    }
 
-        // Start timer
-        var update_timer = setInterval(function() {
-                update();
-            },
-            (config.get('update_interval_sec') * 1000)
-        );
-    });
+    start();
 
 });

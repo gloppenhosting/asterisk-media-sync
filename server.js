@@ -84,6 +84,9 @@ domain.run(function() {
                     .distinct()
                     .then(function(rows) {
 
+                        if (rows.length < 1)
+                            console.log('All files are in sync')
+
                         rows.forEach(function(row) {
                             var filename = row.md5 + '.' + row.format;
                             var file_exists = files.indexOf(filename);

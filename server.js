@@ -69,7 +69,7 @@ domain.run(function() {
         return new Promise((resolve, reject) => {
 
             fs.readdir(media_path, function(err, files) {
-                if (err) reject(err);
+                if (err) return reject(err);
 
                 var array = files.map(function(x) {
                     return x.replace(/\.sln/g, "")
@@ -92,7 +92,9 @@ domain.run(function() {
                                 files.splice(file_exists, 1);
                             } else {
                                 fs.writeFile(media_path + filename, row.data, function(err) {
-                                    if (err) reject(err);
+                                    if (err) {
+                                        return reject(err);
+                                    }
 
                                     fs.chownSync(media_path + filename, ASTERISK_USER_ID, ASTERISK_GROUP_ID);
 
@@ -104,9 +106,7 @@ domain.run(function() {
 
                         resolve();
                     })
-                    .catch(function(err) {
-                        reject(err);
-                    });
+                    .catch(reject);
             });
         });
     };

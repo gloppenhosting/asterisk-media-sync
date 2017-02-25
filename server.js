@@ -91,26 +91,20 @@ domain.run(function() {
 
                         rows.forEach(function(row) {
                             var filename = row.md5 + '.' + row.format;
-                            var file_exists = files.indexOf(filename);
                             console.log('Starting to sync', filename);
 
-                            if (file_exists > -1) {
-                                files.splice(file_exists, 1);
+                            fs.writeFile(media_path + filename, row.data, function(err) {
+                                if (err) {
+                                    return reject(err);
+                                }
+
+                                fs.chownSync(media_path + filename, ASTERISK_USER_ID, ASTERISK_GROUP_ID);
+
+                                console.log('Synced', filename, 'to path', media_path);
+
                                 return resolve();
-                            } else {
-                                fs.writeFile(media_path + filename, row.data, function(err) {
-                                    if (err) {
-                                        return reject(err);
-                                    }
+                            });
 
-                                    fs.chownSync(media_path + filename, ASTERISK_USER_ID, ASTERISK_GROUP_ID);
-
-                                    console.log('Synced', filename, 'to path', media_path);
-                                    files.splice(file_exists, 1);
-
-                                    return resolve();
-                                });
-                            }
                         });
                     })
                     .catch(reject);

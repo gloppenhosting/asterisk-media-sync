@@ -79,13 +79,14 @@ domain.run(function() {
                     .select('md5', 'data', 'format')
                     .from(asterisk_config.get('mediafilestable'))
                     .whereNotIn('md5', array)
-                    .limit(25)
+                    .limit(2)
                     .orderBy('id')
                     .then(function(rows) {
 
                         rows.forEach(function(row) {
                             var filename = row.md5 + '.' + row.format;
                             var file_exists = files.indexOf(filename);
+                            console.log('Starting to sync', filename);
 
                             if (file_exists > -1) {
                                 files.splice(file_exists, 1);

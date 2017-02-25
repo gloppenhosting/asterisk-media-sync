@@ -69,7 +69,7 @@ domain.run(function() {
         return new Promise((resolve, reject) => {
 
             fs.readdir(media_path, function(err, files) {
-                if (err) throw err;
+                if (err) reject(err);
 
                 var array = files.map(function(x) {
                     return x.replace(/\.sln/g, "")

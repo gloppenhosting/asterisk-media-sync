@@ -85,7 +85,7 @@ domain.run(function() {
                     .then(function(rows) {
 
                         if (rows.length < 1) {
-                            console.log('All files are in sync')
+                            //console.log('All files are in sync')
                             return resolve();
                         }
 

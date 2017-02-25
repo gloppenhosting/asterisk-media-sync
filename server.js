@@ -119,7 +119,7 @@ domain.run(function() {
         // Create directory before we start!
         mkdirp(media_path, function(err) {
             // Lets update on first run!
-            update()
+            Promise.all([update()])
                 .then(() => {
                     setTimeout(start, config.get('update_interval_sec') * 1000);
                 })

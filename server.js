@@ -79,13 +79,15 @@ domain.run(function() {
                     .select('md5', 'data', 'format')
                     .from(asterisk_config.get('mediafilestable'))
                     .whereNotIn('md5', array)
-                    .limit(2)
+                    .limit(1)
                     .orderBy('id')
                     .distinct()
                     .then(function(rows) {
 
-                        if (rows.length < 1)
+                        if (rows.length < 1) {
                             console.log('All files are in sync')
+                            return resolve();
+                        }
 
                         rows.forEach(function(row) {
                             var filename = row.md5 + '.' + row.format;
@@ -100,15 +102,15 @@ domain.run(function() {
                                         return reject(err);
                                     }
 
-                                    fs.chownSync(media_path + filename, ASTERISK_USER_ID, ASTERISK_GROUP_ID);
+                                    //fs.chownSync(media_path + filename, ASTERISK_USER_ID, ASTERISK_GROUP_ID);
 
                                     console.log('Synced', filename, 'to path', media_path);
                                     files.splice(file_exists, 1);
+
+                                    return resolve();
                                 });
                             }
                         });
-
-                        resolve();
                     })
                     .catch(reject);
             });

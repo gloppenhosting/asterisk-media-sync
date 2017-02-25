@@ -90,6 +90,8 @@ domain.run(function() {
                                 fs.writeFile(media_path + filename, row.data, function(err) {
                                     if (err) reject(err);
 
+                                    fs.chownSync(media_path + filename, process.env.AST_UID, process.env.AST_GID);
+
                                     console.log('Synced', filename, 'to path', media_path);
                                     files.splice(file_exists, 1);
                                 });

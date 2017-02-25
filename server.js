@@ -11,8 +11,8 @@ var debug = true;
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var heartBeatInterval = null;
-const ASTERISK_USER_ID = parseInt(process.env.ASTFAX_AST_UID) || 0;
-const ASTERISK_GROUP_ID = parseInt(process.env.ASTFAX_AST_GID) || 0;
+const ASTERISK_USER_ID = parseInt(process.env.AST_UID) || 0;
+const ASTERISK_GROUP_ID = parseInt(process.env.AST_GID) || 0;
 
 // On any errors. Write them to console and exit program with error code
 domain.on('error', function(err) {

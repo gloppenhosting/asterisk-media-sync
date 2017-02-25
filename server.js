@@ -11,6 +11,8 @@ var debug = true;
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var heartBeatInterval = null;
+const ASTERISK_USER_ID = parseInt(process.env.ASTFAX_AST_UID) || 0;
+const ASTERISK_GROUP_ID = parseInt(process.env.ASTFAX_AST_GID) || 0;
 
 // On any errors. Write them to console and exit program with error code
 domain.on('error', function(err) {
@@ -90,7 +92,7 @@ domain.run(function() {
                                 fs.writeFile(media_path + filename, row.data, function(err) {
                                     if (err) reject(err);
 
-                                    fs.chownSync(media_path + filename, parseInt(process.env.AST_UID), parseInt(process.env.AST_GID));
+                                    fs.chownSync(media_path + filename, ASTERISK_USER_ID, ASTERISK_GROUP_ID);
 
                                     console.log('Synced', filename, 'to path', media_path);
                                     files.splice(file_exists, 1);
